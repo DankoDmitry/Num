@@ -3,7 +3,7 @@ using namespace std;
 
 int main()
 {
-    int const N = 4;
+    int const N = 3;
 
     float Gilbert_maxrix[N][N];
     for (int i = 0; i < N; i++){
@@ -41,7 +41,8 @@ int main()
         }
         cout << endl;
     }
-
+    cout << endl;
+    
     for (int i = 0; i < N; i++){
         for (int j = 0; j < N; j++) {
             cout << U[j][i] << "   ";
