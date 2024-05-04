@@ -315,34 +315,17 @@ void LU(Matrix& U, Matrix& L)
 
 int main() 
 {
-    int N = 4;
-    // cout << endl << -3 << endl;
+    int N = 6;
 
-    // Matrix G(N, N, 'g');
-    // cout << endl << -2 << endl;
-    // Matrix L(N, N, 'e');
-    // cout << endl << -1 << endl;
+    Matrix G(N, N, 'g');
+    Matrix L(N, N, 'e');
+    Matrix U(N, N);
 
-    Matrix L(N, N);
+    U.copy(G);
 
+    LU(U, L);
 
-    // Matrix U(N, N);
-    // cout << endl << 0 << endl;
-
-    // U.copy(G);
-
-    // cout << endl << 1 << endl;
-
-    // LU(U, L);
-    // cout << endl << 2 << endl;
-
-    // // U.print();
-    // // L.print();
-
-    // Matrix C = mul(L, U);
-    // cout << endl << 3 << endl;
-
-    // cout << distinction_max(G, C) << endl;
+    Matrix C = mul(L, U);
 
     // A.print();
     // B.print();

@@ -18,10 +18,10 @@ public:
     //     cout << endl;
     // }
     // Очистка памяти
-    ~Vector()
-    {
-        delete[] elem;
-    }
+    // ~Vector()
+    // {
+    //     delete[] elem;
+    // }
 private:
     double* elem;
     int  sz;
@@ -52,7 +52,7 @@ public:
 
 int main() 
 {
-    int N = 5;
+    int N = 15;
 
     Matrix L(N, N);
 
