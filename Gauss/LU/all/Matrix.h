@@ -1,6 +1,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <cmath>
+
 using namespace std;
 
 class Matrix
@@ -17,6 +18,14 @@ class Matrix
                 el = new long double*[row];
                 switch (type)
                 {
+                case '1':
+                    for (long int i=0; i!=row; i++)
+                    {
+                        el[i] = new long double[column];
+                        for (long int j = 0; j != column; ++j)
+                            el[i][j] = 1.;
+                    }
+                    break;
                 case 'i':
                     for (long int i=0; i!=row; i++)
                     {
@@ -54,8 +63,6 @@ class Matrix
         long int column;
 
         // constructors and destructor
-        Matrix(char type = 'z'): row(1), column(1) { Create(type); }
-        Matrix(long int i = standart_size): row(i), column(i) { Create(); }
         Matrix(long int i = standart_size, long int j = standart_size, char type = 'z'): row(i), column(j) { Create(type); }
         Matrix(const Matrix& a, char type) : row(a.row), column(a.column) { Create(type); }
 
@@ -202,18 +209,124 @@ class Matrix
             {
             case 'e':
                 return 1.;
-                // break;
             case '?':
                 cout << "unknown det" << endl;
                 return -1.;
-                // break;
             default:
                 long double d = 1.;
                 for (long int i=0; i!=row; ++i)
                     d *= el[i][i];
                 return d;
-                // break;
             }
         }
 
 };
+
+Matrix mul(Matrix m1, Matrix m2)
+{ 
+    if (m1.column != m2.row)
+    {
+        cout << "Error: mul - different shape (return m1)" << endl;
+        Matrix m('0');
+        return m;
+    }
+    else 
+    {
+        Matrix result(m1.row, m2.column, 'z');
+        long double summ = 0;
+        for (long int i=0; i!=m1.row; ++i) 
+            for (long int j=0; j!= m2.column; ++j)
+                {
+                    summ = 0;
+                    for (long int k=0; k!=m1.column; ++k)
+                        summ += m1.el[i][k]*m2.el[k][j];
+                    result.el[i][j]=summ;
+                }
+        return result;
+    }
+}
+
+void Diag(Matrix& U)
+{
+    long int N = U.row;
+    long int M = U.column;
+    long double a;
+    long double b;
+    for (long int i=0; i!=N; ++i)
+    {
+        if (U.el[i][i] == 0)
+        {
+            long int k = i;
+            while (U.el[k][i] == 0 && k != N) k++;
+            if (k == N+1) break;
+            U.swap(i, k);
+        }
+        else if (U.el[i][i] != 0)
+        {
+            a = U.el[i][i];
+            for (long int j=i+1; j!=N; ++j)
+            {
+                b = U.el[j][i];
+                for (long int k=i; k!=M; ++k)
+                    U.el[j][k] -= U.el[i][k]*b/a;
+            }
+        }
+
+    }
+}
+
+// Разница между 2мя матрицами в L2 и max. При желании сравнения с 0 -> вписать Matrix(row, column)
+long double distinction_max (Matrix m1, Matrix m2)
+    {
+        long double dist = 0;
+        long double temp = 0;
+        for (long int i=0; i!=m1.row; ++i) 
+            for (long int j=0; j!= m2.column; ++j)
+                {
+                    temp = abs(m1.el[i][j] - m2.el[i][j]);
+                    if (temp > dist) dist = temp;
+                }
+        return dist;
+    }
+long double distinction_L2 (Matrix m1, Matrix m2)
+    {
+        long double dist = 0;
+        long double temp;
+        for (long int i=0; i!=m1.row; ++i) 
+            for (long int j=0; j!= m2.column; ++j)
+            {
+                temp = abs(m1.el[i][j] - m2.el[i][j]);
+                dist += temp*temp;
+            }
+        return sqrt(dist);
+    }
+
+void LU(Matrix& U, Matrix& L)
+{
+    long int N = U.row;
+    long int M = U.column;
+    long double a;
+    long double b;
+    for (long int i=0; i!=N; ++i)
+    {
+        if (U.el[i][i] == 0)
+        {
+            long int k = i;
+            while (U.el[k][i] == 0 && k != N) k++;
+            if (k == N+1) break;
+            U.swap(i, k);
+        }
+        else if (U.el[i][i] != 0)
+        {
+            a = U.el[i][i];
+            for (long int j=i+1; j!=N; ++j)
+            {
+                b = U.el[j][i];
+                L.el[j][i] = b/a;
+                for (long int k=i; k!=M; ++k)
+                    U.el[j][k] -= U.el[i][k]*b/a;
+            }
+        }
+
+    }
+}
