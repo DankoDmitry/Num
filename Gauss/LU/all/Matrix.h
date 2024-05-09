@@ -107,6 +107,54 @@ class Matrix
         }
 
         // Operators
+        Matrix& operator+=(const Matrix A)
+        {
+            if (row == A.row && column == A.column)
+                for (long int i=0; i!=row; i++)
+                    for (long int j=0; j!=column; ++j)
+                        el[i][j] += A.el[i][j];
+            else cout << "ERROR: += diff shape" << endl;
+
+            return *this; 
+        }
+        Matrix& operator-=(const Matrix A)
+        {
+            if (row == A.row && column == A.column)
+                for (long int i=0; i!=row; i++)
+                    for (long int j=0; j!=column; ++j)
+                        el[i][j] -= A.el[i][j];
+            else cout << "ERROR: -= diff shape" << endl;
+
+            return *this; 
+        }
+
+        void Transposition()
+        {
+            Matrix result(column, row, 'z');
+
+            for (long int i=0; i!=column; ++i)
+            {
+                for (long int j=0; j!=row; ++j)
+                    result.el[i][j] = el[j][i];
+            }
+
+            for (long int i=0; i!=row; i++)
+                delete[] el[i];
+            delete[] el;
+
+            long double temp = row;
+            row = column;
+            column = temp;
+            
+            el = new long double*[row];
+            for (long int i=0; i!=row; i++)
+            {
+                el[i] = new long double[column];
+                for (long int j = 0; j != column; ++j)
+                    el[i][j] = result.el[i][j];
+            }
+        }
+
         Matrix& swap(long int i, long int j)      // Меняет местами i-ю и j-ю строки
         {
             auto temp = el[i];
@@ -219,6 +267,7 @@ class Matrix
                 return d;
             }
         }
+
 
 };
 

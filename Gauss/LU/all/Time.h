@@ -3,12 +3,12 @@
 #include <ctime>
 using namespace std;
 
-class Taim
+class Time
 {
     private: 
         int seconds;
     public:
-        Taim() : seconds(time(NULL)) {}
+        Time() : seconds(time(NULL)) {}
 
         void Past_Time()
         {

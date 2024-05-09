@@ -1,5 +1,5 @@
 #include "Matrix.h"
-#include "Taim.h"
+#include "Time.h"
 
 class Slae
 {
@@ -89,7 +89,27 @@ class Slae
             }
             solve_LU = X;
         }
+
 };
 
+void M_LU_Solve(Matrix a, Matrix b, bool time = false, bool out_put = false)
+{
+    Time t; 
+
+    Slae A(a);
+
+    A.B(b);
+
+    A.LU();
+
+    A.Solve_LU();
+
+    if (out_put)
+        A.solve_LU.Display();
+
+    if (time)
+        t.Past_Time();
+
+}
 
 
