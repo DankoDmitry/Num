@@ -5,10 +5,12 @@ class Slae
 {
     public:
         long int n;
-        Matrix Sys;
+        Matrix Sys;        // Изначальная система
         Matrix L, U;
         Matrix b;
         Matrix solve_LU;
+
+        Matrix Q, R;
 
         Slae(Matrix A) : Sys(A) { n = A.row;}
 
@@ -88,6 +90,34 @@ class Slae
                     X.el[i][k] = (B.el[i][k] - s[k])/U.el[i][i];
             }
             solve_LU = X;
+        }
+
+
+        void QR()
+        {
+            long int n = Sys.row;
+            long int m = Sys.column;
+            Matrix q(Sys), r(m,m,'i'), h(Sys);
+            long double coef;
+
+            for (long int i = 0; i!=m; ++i)
+            {
+                // h_k = Sys_k - SUMM{ j=0, k-1} (Sys_k, q_k)*q_k
+
+                h.copy_column(i, Sys, i);
+
+
+                for (long int j = 0; j!=i; ++j) 
+                {
+                    coef = scl_column(Sys, i, q, j);
+                    h.minus_column(i, q, j, coef);
+                }
+                
+                q.k_norm(i, h, i);
+
+            }
+            
+            Q = q;
         }
 
 };

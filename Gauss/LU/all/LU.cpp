@@ -1,12 +1,31 @@
 #include "Slae.h"
 
+using namespace std;
+
 int main()
 {
-    long int N = 4;
-    Matrix V(N, N, 'g');
-    Matrix T(N, 1, 'g');
-
     
+    cout << setprecision(16);
+    int N = 7;
+
+    Matrix G(N,N,'g');
+    Matrix b(N,2*N,'g');
+    
+    Slae l1(G);
+
+    l1.QR();
+
+    Matrix q = l1.Q;
+
+    q.Transposition();
+
+    l1.Q.Display();
+    q.Display();
+
+    Matrix W = mul(q, l1.Q);
+    W.Display();
+
+    cout << l1.Q.el[2][2] << endl;
 
     return 0;
 

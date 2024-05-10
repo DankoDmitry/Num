@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <typeinfo>
 #include <cmath>
 
@@ -184,7 +185,7 @@ class Matrix
                     el[i][j] *= x;
         }
         
-        void mul(Matrix m)           // Умножает данную матрицу на матрицу m и записывает туда же
+        Matrix& mul(Matrix m)           // Умножает данную матрицу на матрицу m и записывает туда же
         {
             Matrix result(row, m.column, 'z');
             long double summ = 0;
@@ -197,6 +198,7 @@ class Matrix
                         result.el[i][j] = summ;
                     }
             this->copy(result);
+            return *this;
         }
 
         void Display()
@@ -205,7 +207,7 @@ class Matrix
             {
                 for(long int j=0; j!=column; j++)
                 {
-                    cout.width(13);
+                    cout.width(25);
                     cout << el[i][j];
                 }
                 cout << endl;
@@ -268,8 +270,121 @@ class Matrix
             }
         }
 
+         // QR Code -------------------------------------------------------
+        long double scl_column(Matrix m1, long int c1, Matrix m2, long int c2)
+        {
+            if (m1.row == m2.row)
+            {    
+                long double sum = 0;
+                for (long int i=0; i!=m1.row; ++i)
+                {
+                    sum += m1.el[i][c1] * m2.el[i][c2];
+                }
+                return sum;
+            }
+            else
+            {
+                cout << "Error: scl - different shape" << endl;
+                return -1;
+            }
+        }
+
+        Matrix& copy_column(long int k, Matrix q, long int j)
+        {
+            // this_k = q_j
+
+            if (row == q.row)
+            {
+                for (long int i=0; i!=row; ++i)
+                    el[i][k] = q.el[i][j];
+            }
+            else 
+            {
+                cout << "Error: copy_column - different shape" << endl;
+            }
+
+            return *this;
+        }
+
+        Matrix& minus_column(long int k, Matrix q, long int j, long double coeffisient = 1.)
+        {
+            // this_k -= q_j * coeffisient
+
+            if (row == q.row)
+            {
+                long double a;
+                long double d;
+
+                for (long int i=0; i!=row; ++i)
+                {
+                    el[i][k] -= q.el[i][j] * coeffisient;
+                }
+            }
+            else 
+            {
+                cout << "Error: minus_column - different shape" << endl;
+            }
+
+            return *this;
+        }
+
+        Matrix& k_ortogonalisation(long int k, Matrix q, Matrix Sys)
+        {
+            // h_k = Sys_k - SUMM{ j=0, k-1} (Sys_k, q_k)*q_k
+
+            this->copy_column(k, Sys, k);
+
+            long double coef;
+
+            for (long int j = 0; j!=k; ++j) 
+            {
+                coef = scl_column(Sys, k, q, j);
+                this->minus_column(k, q, j, coef);
+            }
+
+            return *this;
+        }
+
+        Matrix& k_norm(long int k, Matrix h, long int i)
+        {
+            // Функция q_k = h_k / |h_k|
+
+            long double mod = 0.;
+            long double x = 0.;
+            for (long int j = 0; j!=row; ++j)
+            {
+                x = h.el[j][i];
+                mod += x*x;
+            }
+
+            mod = sqrt(mod);
+
+            for (long int j = 0; j!=row; ++j)
+                el[j][k] = h.el[j][i]/mod;
+            
+            return *this;
+        }
+        //----------------------------------------------------------------
+
 
 };
+
+long double scl_column(Matrix m1, long int c1, Matrix m2, long int c2)
+{
+    if (m1.row == m2.row)
+    {    long double sum = 0;
+        for (long int i=0; i!=m1.row; ++i)
+        {
+            sum += m1.el[i][c1] * m2.el[i][c2];
+        }
+        return sum;
+    }
+    else
+    {
+        cout << "Error: scl - different shape" << endl;
+        return -1.;
+    }
+}
 
 Matrix mul(Matrix m1, Matrix m2)
 { 
