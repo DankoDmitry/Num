@@ -6,28 +6,29 @@ int main()
 {
     
     cout << setprecision(16);
-    int N = 7;
+    int N = 5;
 
     Matrix G(N,N,'g');
     Matrix b(N,2*N,'g');
     
     Slae l1(G);
 
-    l1.QR();
+    l1.QR_Householder();
 
-    Matrix q = l1.Q;
+    // l1.QR();
+    
 
-    q.Transposition();
+    // q.Transposition();
 
-    l1.Q.Display();
-    q.Display();
+    // l1.Q.Display();
+    // q.Display();
 
-    Matrix W = mul(q, l1.Q);
-    W.Display();
+    // Matrix W = mul(q, l1.Q);
+    // W.Display();
 
-    cout << l1.Q.el[2][2] << endl;
+    // cout << l1.Q.el[2][2] << endl;
 
-    return 0;
+    // return 0;
 
 /////////////////////////////
     // int N = 1;

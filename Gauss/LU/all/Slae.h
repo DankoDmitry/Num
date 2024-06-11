@@ -1,4 +1,4 @@
-#include "Matrix.h"
+#include "M.h"
 #include "Time.h"
 
 class Slae
@@ -11,6 +11,7 @@ class Slae
         Matrix solve_LU;
 
         Matrix Q, R;
+        Matrix Q_Householder, R_Householder;
 
         Slae(Matrix A) : Sys(A) { n = A.row;}
 
@@ -92,7 +93,6 @@ class Slae
             solve_LU = X;
         }
 
-
         void QR()
         {
             long int n = Sys.row;
@@ -116,8 +116,55 @@ class Slae
                 q.k_norm(i, h, i);
 
             }
-            
             Q = q;
+            q.Transposition();
+            R = mul(q, Sys);
+        }
+
+        void QR_Householder()
+        {
+            long int n = Sys.row;
+            long int m = Sys.column;
+
+            Matrix r(Sys), q(m,m,'i'), h(Sys);
+            long double coef;
+
+            for (long int i = 0; i!=n; ++i)
+            {
+                Matrix P_i(n, m, 'i');
+                Matrix v(n - i, 1, 'z');
+                long double norm = 0;
+
+                for (long int j = i; j < m; ++j) {v.el[j-i][0] = r.el[j][i]; norm += r.el[j][i]*r.el[j][i];}
+                norm = sqrt(norm);
+                if (v.el[0][0] <= 0) norm *= -1;
+                v.el[0][0] += norm;
+
+                norm = 0;
+                for (long int j = i; j < m; ++j) {norm += v.el[j-i][0]*v.el[j-i][0];}
+                norm = 2/norm;
+
+                for (long int j = i; j < m; ++j) {
+                    for (long int k = i; k < n; ++k) {
+                        P_i.el[j][k] -= norm*v.el[j-i][0]*v.el[k-i][0];
+                    }
+                }
+
+                r = mul(P_i, r);
+                q = mul(q, P_i);
+
+            }
+            // r.Display();
+            // q.Display();
+
+            // Matrix Q(q);
+
+            // q.Transposition();
+            // Q = mul(Q, q);
+            // Q.Display();
+            
+            Q_Householder = q;
+            R_Householder = r;
         }
 
 };
