@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <typeinfo>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
