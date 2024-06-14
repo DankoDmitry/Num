@@ -4,31 +4,74 @@ using namespace std;
 
 int main()
 {
-
+    
     cout << setprecision(16);
     int N = 3;
 
     Matrix G(N,N,'g');
 
-    G.el[1][0] = 5;
-    G.el[2][0] = 1;
-    G.el[2][1] = 10;
-
     G.Display();
 
-    Slae l1(G);
+    Slae p(G);
+
+    p.SVD();
+
+    
+    p.U_SVD.Display();
+    p.S_SVD.Display();
+    p.V_SVD.Display();
+
+    Matrix A(p.V_SVD);
+    A.Transposition();
+
+    mul(mul(p.U_SVD, p.S_SVD), A).Display();
 
 
-    l1.SVD();
 
-    l1.U_SVD.Display();
-    l1.S_SVD.Display();
-    l1.V_SVD.Display();
 
-    Matrix v(l1.V_SVD);
-    v.Transposition();
 
-    mul(mul(l1.U_SVD, l1.S_SVD), v).Display();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Проверка сингулярного разложения на невырожденной матрице
+    // cout << setprecision(16);
+    // int N = 3;
+
+    // Matrix G(N,N,'g');
+
+    // G.el[1][0] = 5;
+    // G.el[2][0] = 1;
+    // G.el[2][1] = 10;
+
+    // G.Display();
+
+    // Slae l1(G);
+
+
+    // l1.SVD();
+
+    // l1.U_SVD.Display();
+    // l1.S_SVD.Display();
+    // l1.V_SVD.Display();
+
+    // Matrix v(l1.V_SVD);
+    // v.Transposition();
+
+    // mul(mul(l1.U_SVD, l1.S_SVD), v).Display();
 
 
 
